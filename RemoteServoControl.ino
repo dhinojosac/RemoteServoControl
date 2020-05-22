@@ -31,7 +31,7 @@ void setup() {
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 
-  servo.write(0);  //set servo to 0
+  servo.write(800);  //set servo to 0
 
   Serial.println(subs_topic);
   Serial.println(pub_topic);
@@ -58,8 +58,6 @@ void setup_wifi() {
   Serial.println("");
   Serial.println("WiFi connected");
   
-  servo.write(10); //set servo to 10
-  
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 }
@@ -68,10 +66,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
   char command[20] = "";
   memcpy(command, payload, length);
 
-  
+  if ( memcmp((char*)payload, "open",4)==0){
+    Serial.println("Opening the gate...");
+    servo.writeMicroseconds(600);
+    delay(500);
+    servo.writeMicroseconds(800);
+    
+  }else{
   //servo.write(atoi((char*)command));
   servo.writeMicroseconds(atoi((char*)command));
-
+  }
   Serial.print(">");
   Serial.print(command);
   Serial.print("<\n");
